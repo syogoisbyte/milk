@@ -1,30 +1,35 @@
 var milkcocoa = new MilkCocoa("https://io-gi3b4t3v4.mlkcca.com");
 /* your-app-id にアプリ作成時に発行される"io-"から始まるapp-idを記入します */
 var chatDataStore = milkcocoa.dataStore("chat");
-var textArea, board;
+
+//フォームの情報を記録しておく変数.
+var textArea, board,textName;
+
+//ページが読み込み終わったときの処理.
 window.onload = function(){
   textArea = document.getElementById("msg");
   board = document.getElementById("board");
+  textName = document.getElementById("textName");
 }
 
 function clickEvent(){
   var text = textArea.value;
-  sendText(text);
+  sendText(text,textName.value);
 }
 
-function sendText(text){
-  chatDataStore.push({message : text},function(data){
+function sendText(text,nm){
+  chatDataStore.push({uname : nm,content : text},function(data){
     console.log("送信完了!");
     textArea.value = "";
   });
 }
 
 chatDataStore.on("push",function(data){
-  addText(data.value.message);
+  addText(data.value);
 });
 
 function addText(text){
   var msgDom = document.createElement("li");
-  msgDom.innerHTML = text;
+  msgDom.innerHTML = text.uname+":"+text.content;
   board.insertBefore(msgDom, board.firstChild);
 }
